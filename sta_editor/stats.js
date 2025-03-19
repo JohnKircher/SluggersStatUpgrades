@@ -49,8 +49,8 @@ for(let stat of nonStaticStats){
             options: ['', 'low', 'medium', 'high'],
             values: [255, 2, 0, 1],
             default: 255,
-            // This has made me realize I'm accidentally relying on NaN abuse, ugh
-            // Well it ain't broke
+            // potential NaN abuse to fix crashes could work
+            
             onchange: (v) => {
                 setStat(stat, v == 255 ? NaN : v);
                 generateCode();

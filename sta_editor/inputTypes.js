@@ -1,5 +1,4 @@
-// This was meant to be more modular but I ended up making completely seperate objects, oops
-// It's contained to this file at least. Better luck next time
+
 
 function selectInput (params) {
     let outerDiv = document.createElement('div');
@@ -96,7 +95,6 @@ function numInput (params) {
         }
     };
     base.updateHighlight();
-    // Wow this is hacky but somehow I feel more comfortable doing things like this
     let fref = inputBox.onchange;
     inputBox.onchange = function (val) {
         fref(val);

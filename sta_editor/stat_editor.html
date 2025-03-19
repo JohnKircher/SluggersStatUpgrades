@@ -118,7 +118,7 @@
                     if(newVal == player.old[stat.offset]) {
                         continue;
                     }
-                    // Very glad all halfword stats are at even addresses and the base address is on a word boundary
+                    
                     setWord(stat, player.offset + stat.offset, newVal)
                 }
             }
