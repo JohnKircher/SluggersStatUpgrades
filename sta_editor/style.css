@@ -1,0 +1,182 @@
+body {
+    font-size: 22px;
+}
+
+.different {
+    background-color: rgba(10,100,10,0.2);
+}
+
+.num_input {
+    padding: 3px;
+    display: inline-block;
+}
+
+.num_input input {
+    width: 100px;
+}
+
+.invisible {
+    display: none;
+}
+
+#tabs {
+    display: inline-block;
+}
+
+#tab_menu {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.tab_selection {
+    width: 120px;
+    display: inline-block;
+    text-align: center;
+    padding: 5px 0;
+    font-size: 20px;
+    border-radius: 20px 20px 0 0;
+    margin: 5px 2px;
+}
+
+.tab_selection:hover {
+    cursor: pointer;
+}
+
+.tab_selection {
+    text-decoration: none;
+    font-weight: normal;
+    background-color: rgb(255, 243, 229);
+}
+
+.tab_selection.selected {
+    text-decoration: underline solid black 2px;
+    font-weight: bold;
+    background-color: rgb(255,228,196);
+}
+
+.select_input {
+    display: inline-block;
+    padding: 3px;
+}
+
+.check_input {
+    display: inline-block;
+    padding: 3px;
+    height: 30px;
+}
+
+.check_input p {
+    display: inline-block;
+    vertical-align: top;
+    margin: 5px 5px;
+}
+
+.range_input {
+    display: inline-block;
+    padding: 3px;
+    height: 30px;
+    font-size: 18px;
+    background-color: rgb(176, 255, 185);
+    color: #000000;
+}
+
+.range_input p {
+    margin: 5px 5px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.range_input .number_box {
+    width: 75px;
+    height: 24px;
+    margin-top: 3px;
+    font-size: 18px;
+    vertical-align: top;
+}
+
+.range_input.disabled {
+    background-color: #eeeeee;
+    color: #555555;
+}
+
+.range_input.disabled .number_box {
+    pointer-events: none;
+}
+
+.range_input.disabled p {
+    text-decoration: line-through;
+}
+
+.check_box {
+    min-width: 30px;
+    min-height: 30px;
+    margin: 0;
+}
+
+.check_box:hover {
+    cursor: pointer;
+}
+
+#randomize_btn {
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.descriptor {
+    line-height: 20px;
+    overflow: hidden;
+}
+
+.descriptor p {
+    margin: 0;
+    padding: 3px 5px 3px 3px;
+    font-size: 18px;
+    display: inline-block;
+}
+
+.severity_low {
+    color: #000000;
+}
+
+.severity_medium {
+    color: #D08000;
+}
+
+.severity_high {
+    color: #D00000;
+}
+
+.descriptor::before {
+    content: '↳';
+    font-style: normal;
+    color: black;
+    font-size: 22px;
+    margin: 0 3px 0 50px;
+}
+
+/* Fix input alignment - Make all text boxes align */
+.num_input, .select_input {
+    display: flex;
+    align-items: center;
+    width: 100%; /* Ensures full-width alignment */
+}
+
+.num_input label, .select_input label {
+    min-width: 200px; /* Adjust for label width consistency */
+    text-align: right;
+    margin-right: 15px; /* Space between label and input */
+    white-space: nowrap; /* Prevents wrapping */
+}
+
+.num_input input, .select_input select {
+    flex-grow: 1; /* Makes inputs take up remaining space */
+    max-width: 120px; /* Ensures inputs stay aligned */
+}
+
+/* Ensures input fields stay aligned properly */
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Adds spacing between fields */
+}

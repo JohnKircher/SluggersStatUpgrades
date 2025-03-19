@@ -1,0 +1,194 @@
+<head>
+    <title>Mario Super Sluggers Stat Editor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+    <h3>Sluggers Stats Changer</h3>
+    <p class = "severity_high">Do not increase stats over 150 or go below 0</p>
+    <p class = "severity_high">Chem = 2 is like -- Chem = 0 is hate</p>
+    <div id = "tab_menu">
+        <p class = "tab_selection selected">Players</p>
+        <p class = "tab_selection" class = "">Chemistry</p>
+    </div>
+    <div id = "tabs">
+        <div id = "fields" class = "tab"></div>
+        <div id = "chemistry" class = "tab invisible"></div>
+    </div>
+    <!-- <button id = "generate" onclick = "genCode()">
+        Generate Code
+    </button> -->
+    <code><p id = "output" style = "font-size: 16px;"></p></code>
+    <script src = "bytes.js"></script>
+    <script src = "consts.js"></script>
+    <script src = "inputTypes.js"></script>
+    <script src = "stats.js"></script>
+    <script src = "chem.js"></script>
+    <script type = "text/javascript">
+
+        function intToHex(int, len){
+            return int.toString(16).toUpperCase().padStart(len, '0').slice(-len);
+        }
+
+        function geckoCode04 (addr, values) {
+            if(values.length != 4){
+                console.warn('geckoCode04 called with ' + values);
+            }
+            out = '04' + intToHex(addr, 6) + ' ';
+            out += intToHex(
+                values[3] +
+                (values[2] << 8) +
+                (values[1] << 16) +
+                (values[0] << 24), 8);
+            return out;
+        }
+
+        function geckoCode06 (addr, values) {
+            if(values.length % 4){
+                console.warn('geckoCode06 called with ' + values);
+            }
+            out = '06' + intToHex(addr, 6) + ' ';
+            out += intToHex(values.length, 8);
+            for (var ind in values) {
+                out += ind % 8 == 0 ? '\n' : ''; 
+                out += intToHex(values[ind], 2);
+                out += ind % 8 == 3 ? ' ' : '';
+            }
+            out += ind % 8 == 3 ? '00000000' : '';
+            return out;
+        }
+        
+        var output = document.getElementById('output');
+
+        function trajectoryCode (player, value) {
+            return player.name == 'All' ? 
+                ("0862a15c " + intToHex(value, 8) + "\n00640002 00000000") :
+                ("00" + intToHex(0x62a15c + player.id * 2, 6) + " 000000" + intToHex(value, 2));
+        }
+
+        function generateCode () {
+            var out = '';
+
+            out += inputGlobal.uncapPower ? "040b96d4 60000000\n040b9708 60000000\n" : '';
+            out += inputGlobal.uncapContact ? "040b967c 60000000\n040b968c 60000000\n040b9648 60000000\n040b9658 60000000\n" : '';
+
+            // 08 codes for the all values
+            for (let stat of stats) {
+                var newVal = all.new[stat.offset];
+                if (isNaN(newVal)){
+                    continue;
+                }
+                if (stat.offset == -0x1) {
+                    out += trajectoryCode(all, newVal) + '\n';
+                    continue;
+                }
+                out += "08" + intToHex(baseAddr + stat.offset, 6) + ' ';
+                out += intToHex(newVal, 8) + '\n';
+                out += '' + (stat.size - 1) + '064008E 00000000\n';
+            }
+
+            var words = {};
+
+            function setWord (stat, addr, value) {
+                var offset = addr & 0b11;
+                addr = (addr >> 2) << 2;
+                if(stat.size == 1){
+                    (words[addr] ??= [])[offset] ??= value;
+                } else {
+                    if(offset % 2){
+                        console.warn("two byte stat not at even address");
+                        console.warn(stat);
+                    }
+                    (words[addr] ??= [])[offset] ??= newVal >> 8;
+                    words[addr][offset + 1] ??= newVal % 256;
+                }
+            }
+
+            for (let player of players) {
+                for (let stat of stats) {
+                    var newVal = player.new[stat.offset];
+                    if(isNaN(newVal)) {
+                        continue;
+                    }
+                    if (stat.offset == -0x1) {
+                        out += trajectoryCode(player, newVal) + '\n';
+                        continue;
+                    }
+                    if(newVal == player.old[stat.offset]) {
+                        continue;
+                    }
+                    // Very glad all halfword stats are at even addresses and the base address is on a word boundary
+                    setWord(stat, player.offset + stat.offset, newVal)
+                }
+            }
+
+            for (let p1 in newChem) {
+                for (let p2 in newChem[p1]) {
+                    var chemVal = newChem[p1][p2];
+                    if (isNaN(chemVal)) {
+                        continue;
+                    }
+                    if (defaultChem[p1][p2] == chemVal) {
+                        continue;
+                    }
+                    setWord({size: 1}, playersById[p1].offset + chemistryOffsets[p2], chemVal);
+                }
+            }
+
+            // Get the list of addresses to cover
+            var addrs = Object.keys(words).sort((a, b) => a - b);
+
+            // Update the edited words - we already set the values covered by 'All' but don't want any of these codes to reset them
+            for (let stat of stats) {
+                var newVal = all.new[stat.offset];
+                if (isNaN(newVal)){
+                    continue;
+                }
+                for (var player of players) {
+                    setWord(stat, player.offset + stat.offset, newVal);
+                }
+            }
+
+            // Find a good mix of 04 and 06 codes
+            var group = [];
+            function flushGroup () {
+                if (group.length == 0) {
+                    return;
+                }
+                var values = [];
+                for (var i = group[0] - 0; i < group[group.length - 1] - 0 + 4; i ++) {
+                    values.push( (words[i >> 2 << 2] ?? [])[i % 4] ?? data[i] );
+                }
+                if(group.length == 1){
+                    out += geckoCode04(group[0] - 0 + baseAddr, values) + '\n';
+                } else {
+                    out += geckoCode06(group[0] - 0 + baseAddr, values) + '\n';
+                }
+                group = [];
+            }
+            while(addrs.length){
+                if(group.length == 0){
+                    group.push(addrs.shift());
+                } else {
+                    var lastAddr = group[group.length - 1];
+                    var costToAdd = 0;
+                    costToAdd += group.length == 1 ? 1 : 0;
+                    costToAdd += (((addrs[0] - lastAddr) >> 2) - group.length % 2) >> 1;
+                    // If the cost to add this to an 06 code isn't greater than making an 04 code, do it
+                    if (costToAdd <= 1){
+                        group.push(addrs.shift());
+                    } else {
+                        // Generate a code, reset the group
+                        flushGroup();
+                    }
+                }
+            }
+            flushGroup();
+            if (out.length > 0) {
+                out = "Gecko code:\n" + out;
+            }
+            output.innerText = out;
+        }
+    </script>
+</body>
