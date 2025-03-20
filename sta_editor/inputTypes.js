@@ -1,4 +1,4 @@
-
+//create and link text box inputs
 
 function selectInput (params) {
     let outerDiv = document.createElement('div');

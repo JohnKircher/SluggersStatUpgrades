@@ -1,3 +1,8 @@
+//all playable characters and their memory offests in the game files
+//OLD will be default stats, and new will be modified stats. 
+
+//Keep track of offsets so we can accurately modify specific bytes in memory for each Gecko Code
+
 var players = [
     {name: 'Mario', offset: 0x806ce9a0, old: {}, new: {}},
     {name: 'Luigi', offset: 0x806cea2e, old: {}, new: {}},

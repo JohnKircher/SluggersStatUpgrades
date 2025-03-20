@@ -27,10 +27,12 @@
     <script src = "chem.js"></script>
     <script type = "text/javascript">
 
+        //converts integer to hexadecimal string needed for Gecko Codes
         function intToHex(int, len){
             return int.toString(16).toUpperCase().padStart(len, '0').slice(-len);
         }
 
+        //output base address 04 Gecko Codes based on value
         function geckoCode04 (addr, values) {
             if(values.length != 4){
                 console.warn('geckoCode04 called with ' + values);
@@ -44,6 +46,7 @@
             return out;
         }
 
+        //output base address 06 Gecko Codes based on value
         function geckoCode06 (addr, values) {
             if(values.length % 4){
                 console.warn('geckoCode06 called with ' + values);
@@ -67,6 +70,7 @@
                 ("00" + intToHex(0x62a15c + player.id * 2, 6) + " 000000" + intToHex(value, 2));
         }
 
+        //DETAIL
         function generateCode () {
             var out = '';
 
