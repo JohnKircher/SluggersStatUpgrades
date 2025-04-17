@@ -122,9 +122,7 @@ const stats = [
         name: "id",
         static: 1,
     },
-    
-
-
+       
     {
         offset: 0xe,
         size: 1,
@@ -133,6 +131,16 @@ const stats = [
         high: 4,
         min: 0,
         max: 4,
+    },
+
+    {
+        offset: 0xc,
+        size: 1,
+        name: "character class",
+        low: 0,
+        high: 3,
+        min: 0,
+        max: 3,
     },
     
     {
