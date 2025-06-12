@@ -3,6 +3,12 @@
 
 //Keep track of offsets so we can accurately modify specific bytes in memory for each Gecko Code
 
+//CLASS: 
+// 0-BALANCED 
+// 1-POWER 
+// 2 -SPEED 
+// 3 -TECH
+
 var players = [
     {name: 'Mario', offset: 0x806ce9a0, old: {}, new: {}},
     {name: 'Luigi', offset: 0x806cea2e, old: {}, new: {}},
@@ -131,6 +137,15 @@ const stats = [
         high: 4,
         min: 0,
         max: 4,
+    },
+    {
+        offset: 0xf,
+        size: 1,
+        name: "captain",
+        low: 0,
+        high: 1,
+        min: 0,
+        max: 1,
     },
 
     {
