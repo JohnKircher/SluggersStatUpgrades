@@ -147,6 +147,12 @@ const stats = [
         min: 0,
         max: 1,
     },
+    {
+        offset: 0x24,
+        size: 1,
+        name: "displayed pitching",
+        max: 10,
+    },
 
     {
         offset: 0xc,
