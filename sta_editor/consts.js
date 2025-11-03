@@ -128,18 +128,6 @@ const stats = [
         name: "id",
         static: 1,
     },
-
-    
-       
-    {
-        offset: 0xe,
-        size: 1,
-        name: "player weight",
-        low: 0,
-        high: 4,
-        min: 0,
-        max: 4,
-    },
     {
         offset: 0xf,
         size: 1,
@@ -149,13 +137,6 @@ const stats = [
         min: 0,
         max: 1,
     },
-    {
-        offset: 0x24,
-        size: 1,
-        name: "displayed pitching",
-        max: 10,
-    },
-
     {
         offset: 0x24,
         size: 1,
