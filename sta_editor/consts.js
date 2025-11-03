@@ -122,6 +122,8 @@ const stats = [
         name: "id",
         static: 1,
     },
+
+    
        
     {
         offset: 0xe,
@@ -131,6 +133,16 @@ const stats = [
         high: 4,
         min: 0,
         max: 4,
+    },
+
+    {
+        offset: 0x24,
+        size: 1,
+        name: "pitching css",
+        low: 2,
+        high: 10,
+        min: 2,
+        max: 10,
     },
 
     {
